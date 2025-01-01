@@ -1,0 +1,24 @@
+Required Classes: [EGR 1301(Anne Spence), CSI 1430, PHY 1420]
+
+Elective Classes: []
+
+Max Hours: [11]
+
+Term: [fall]
+
+Year: [2024]
+
+
+################################################################################
+				    Example input
+################################################################################
+
+Required Classes: [MTH 1322, CHE 1301, EGR 1302, REL 1310(John Smith)]
+
+Elective Classes: [ENG 1310]
+
+Max Hours: [15]
+
+Term: [Spring]
+
+Year: [2025]
