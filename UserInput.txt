@@ -1,12 +1,12 @@
-Required Classes: [EGR 1301(Anne Spence), CSI 1430, PHY 1420]
+Required Classes: [enter]
 
-Elective Classes: []
+Elective Classes: [enter]
 
-Max Hours: [11]
+Max Hours: [enter]
 
-Term: [fall]
+Term: [enter]
 
-Year: [2024]
+Year: [enter]
 
 
 ################################################################################
