@@ -92,6 +92,36 @@ class Course:
         print("Waitlist: " + str(self.waitlist))
         print()
 
+    def writeInfo(self,file):
+        """Writes relevant info stored in course class"""
+
+        file.write("\n" + self.course_num + "\n")
+        file.write("Course name: " + self.course_name + "\n")
+        file.write("Credit hours: " + str(self.hours) + "\n")
+        file.write("Professor: " + self.prof + "\n")
+        if self.labDays != -1:
+            file.write("Class days: " + self.days + "\n")
+            file.write("Lab days: " + str(self.labDays) + "\n")
+        else:
+            file.write("Class days: " + self.days[0] + "\n")
+
+        if self.labTimeBegin != -1:
+            file.write("Class time: " + self.niceTime + "\n")
+            file.write("Lab time: " + self.niceLabTime + "\n")
+        else:
+            if self.niceTime != "Online":
+                file.write("Class time: " + self.niceTime[0] + "\n")
+
+        if self.elective:
+            file.write("Elective" + "\n")
+        else:
+            file.write("Required Class" + "\n")
+        file.write("Section: " + self.section + "\n")
+        file.write("CRN: " + self.CRN + "\n")
+        file.write("Seats Available: " + str(self.seats) + "\n")
+        file.write("Waitlist: " + str(self.waitlist) + "\n")
+
+
     def getData(self):
         """Retrieves relevant info from course class and stores in dictionary.
         Used primarily for exporting course data to an Excel file"""
@@ -129,6 +159,17 @@ class Schedules:
                 n.printCourseInfo()
             print("==============================================")
 
+    def writeToFile(self, file):
+        """Writes relevant info stored in course class to file"""
+        file.write(str(len(self.schedule_list)) + " valid schedules\n")
+        p = 1
+        for m in self.schedule_list:
+            file.write("==============================================\n")
+            file.write("Schedule " + str(p) + "\n")
+            for n in m:
+                n.writeInfo(file)
+            file.write("==============================================")
+            p = p + 1
     def getNumSchedules(self):
         """Returns number of schedules stored in class"""
         return len(self.schedule_list)
@@ -196,7 +237,7 @@ def letterToNum(letter):
     return ord(letter[0]) - 64
 
 
-
+stime = time.time()
 #############################################################################################################
 noInputFlag = 0
 blankFlag = 0
@@ -258,7 +299,36 @@ if year == "":
     blankFlag += 1
     print("Error: Year left blank, please input a valid year")
 
+temp = inputFileContents[10]
+saveToExcel = temp[temp.find("[")+1:temp.find("]")]
+if "enter" in saveToExcel:
+    noInputFlag += 1
+    print("Error: Please replace \"enter\" in Save to Excel with a valid input")
+if saveToExcel == "":
+    blankFlag += 1
+    print("Error: Export to Excel left blank, please input Yes or No")
+if "yes" in saveToExcel.lower():
+    saveToExcel = True
+else:
+    saveToExcel = False
+
+temp = inputFileContents[12]
+saveToTxt = temp[temp.find("[")+1:temp.find("]")]
+if "enter" in saveToTxt:
+    noInputFlag += 1
+    print("Error: Please replace \"enter\" in Save to txt with a valid input")
+if saveToTxt == "":
+    blankFlag += 1
+    print("Error: Export to Excel left blank, please input Yes or No")
+if "yes" in saveToTxt.lower():
+    saveToTxt = True
+else:
+    saveToTxt = False
+
+
 if noInputFlag + blankFlag > 0:
+    print()
+    print("Please read UserInputInstructions.txt then edit UserInput.txt to run program")
     time.sleep((noInputFlag + blankFlag) * 5)
     sys.exit()
 
@@ -315,6 +385,7 @@ noCourseNumArr = []
 reqSectionClasses = []
 
 """Web scrapes data related to each input classes"""
+print("Collecting data...")
 for x in allClassesArr:
     prefix = x[0:x.find(" ")]
     num = x[x.find(" ")+1:]
@@ -505,7 +576,6 @@ for x in allClassesArr:
         classes.append(temp)
 
 #############################################################################################################
-
 for y in noCourseNumArr:
     print("No course with name \"" + y + "\" found.")
 
@@ -513,13 +583,19 @@ if len(noCourseNumArr) > 0:
     time.sleep(5)
     sys.exit(0)
 
+
 reqClasses = []
 
 for x in reqClassesArr:
     classSections = []
     for y in classes:
         if x == y.course_num:
-            classSections.append(y)
+            #classSections.append(y) uncomment and delete if and else below if problem with adding classes
+            if y.course_num in reqPreferredProfClass:
+                if y.prof in reqPreferredProf:
+                    classSections.append(y)
+            else:
+                classSections.append(y)
     reqClasses.append(classSections)
 
 creditSum = 0
@@ -531,6 +607,7 @@ if creditSum > maxHours:
     time.sleep(5)
     sys.exit()
 
+print("Sorting...")
 
 electiveClasses = []
 
@@ -539,8 +616,14 @@ for x in electiveClassesArr:
     classSections = []
     for y in classes:
         if x == y.course_num:
-            y.elective = True
-            classSections.append(y)
+            #classSections.append(y) uncomment and delete if and else below if problem with adding classes
+            if y.course_num in electivePreferredProfClass:
+                if y.prof in electivePreferredProf:
+                    y.elective = True
+                    classSections.append(y)
+            else:
+                y.elective = True
+                classSections.append(y)
     electiveClasses.append(classSections)
 
 validSchedules = Schedules()
@@ -600,7 +683,7 @@ numberedClasses = [i for i in range(0, len(allClasses))]
 
 choose = numReqClasses + maximizedNumClasses
 
-
+print("Calculating combinations...")
 combs = combinations(numberedClasses, choose)
 
 #total = math.comb(len(numberedClasses), choose)
@@ -612,6 +695,7 @@ for i in range(0,len(preferredProfClass)):
 #############################################################################################################
 
 """Filters all combinations within user parameters and time constraints"""
+print("Comparing combinations...")
 for x in combs:
     tempSchedule = []
     timeConflict = False
@@ -663,6 +747,7 @@ for x in combs:
                 timeConflict = True
                 break
 
+            """Checks if class has lab with required section"""
             if class1.course_num == class2.course_num and class1.course_num in reqSectionClasses:
                 if "(lab)" in class1.course_name:
                     temp1 = letterToNum(class1.section)
@@ -691,6 +776,7 @@ if noProfFlag:
     time.sleep(5)
     sys.exit()
 
+print("Filtering results...")
 filteredSchedules = []
 for x in validSchedules.schedule_list:
     classCount = 0
@@ -701,11 +787,31 @@ for x in validSchedules.schedule_list:
     if classCount == numReqClasses:
         filteredSchedules.append(x)
 
-
+print()
+print("Complete!")
+print()
 validSchedules.schedule_list = filteredSchedules
+etime = time.time()
 
-validSchedules.printSchedule()
-print("Valid Schedules: " + str(validSchedules.getNumSchedules()))
+dt = etime - stime
+#print(dt)
+
+#validSchedules.printSchedule()
+numValidSchedules = validSchedules.getNumSchedules()
+print("Valid Schedules: " + str(numValidSchedules))
+
+fileName = "SchedulesTXT.txt"
+
+if saveToTxt and numValidSchedules > 0:
+    i = 1
+    while os.path.exists(fileName):
+        fileName = "SchedulesTXT (" + str(i) + ").txt"
+        i = i + 1
+    file = open(fileName, "w")
+    validSchedules.writeToFile(file)
+    file.close()
+
+    print("Schedules successfully exported to \"" + fileName + "\"!")
 
 i = 0
 tempData = validSchedules.getData()
@@ -719,16 +825,13 @@ for x in tempData:
 
 
 
-fileName = "Schedules.xlsx"
+fileName = "SchedulesXLSX.xlsx"
 
-"""Manual toggle for testing so you don't save to an excel file after every run"""
-saveToExcel = True
-
-if saveToExcel:
+if saveToExcel and numValidSchedules > 0:
     if os.path.exists(fileName):
         i = 1
         while os.path.exists(fileName):
-            fileName = "Schedules (" + str(i) + ").xlsx"
+            fileName = "SchedulesXLSX (" + str(i) + ").xlsx"
             i = i + 1
 
     with pd.ExcelWriter(fileName, engine="openpyxl", mode="w") as writer:
@@ -739,6 +842,7 @@ if saveToExcel:
             df.to_excel(writer, index=False, header=(i == 0), startrow=writer.sheets["Sheet1"].max_row if i > 0 else 0)
 
     print("Schedules successfully exported to \"" + fileName + "\"!")
+
 
 time.sleep(5)
 

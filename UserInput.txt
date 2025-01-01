@@ -8,6 +8,10 @@ Term: [enter]
 
 Year: [enter]
 
+Export to Excel: [enter]
+
+Export to txt: [enter]
+
 
 ################################################################################
 				    Example input
@@ -22,3 +26,7 @@ Max Hours: [15]
 Term: [Spring]
 
 Year: [2025]
+
+Export to Excel: [No]
+
+Export to txt: [Yes]
