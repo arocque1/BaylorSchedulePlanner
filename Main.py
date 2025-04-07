@@ -573,8 +573,9 @@ for x in allClassesArr:
             courseName = courseName + " (lab)"
         CRN = CRNs[i]
         temp = Course(courseNum,courseName,prof,days,times,niceTime,section,CRN,seats,waitlist)
+        #temp.printCourseInfo()
         classes.append(temp)
-
+    #sys.exit()
 #############################################################################################################
 for y in noCourseNumArr:
     print("No course with name \"" + y + "\" found.")
@@ -659,25 +660,29 @@ if electiveClasses[0] != []:
         maximizedNumClasses += 1
 
 """Checks if class is a lab"""
-
+weirdLab = False
+tempWeirdLab = False
 for x in electiveClasses:
-    weirdLab = False
+    #weirdLab = False
     for y in x:
         if y.isLab:
             weirdLab = True
+            tempWeirdLab = True
 
-    if weirdLab:
-        maximizedNumClasses += 1
+if tempWeirdLab:
+    maximizedNumClasses += 1
+tempWeirdLab = False
 
 numReqClasses = len(reqClasses)
 
 for x in reqClasses:
-    weirdLab = False
+    #weirdLab = False
     for y in x:
         if y.isLab:
             weirdLab = True
-    if weirdLab:
-        numReqClasses += 1
+            tempWeirdLab = True
+if tempWeirdLab:
+    numReqClasses += 1
 
 numberedClasses = [i for i in range(0, len(allClasses))]
 
@@ -699,6 +704,10 @@ print("Comparing combinations...")
 for x in combs:
     tempSchedule = []
     timeConflict = False
+    if weirdLab:
+        labWithClass = False
+    else:
+        labWithClass = True
     for y in x:
         tempSchedule.append(allClasses[y])
 
@@ -730,6 +739,10 @@ for x in combs:
                         for w in k:
                             if q == w:
                                 sameDay = True
+
+            """If there is a weird lab in the schedule, checks if the class has concurrent lab"""
+            if weirdLab and class1.course_num == class2.course_num and (class1.isLab ^ class2.isLab):
+                labWithClass = True
 
             """Checks if classes are the same course"""
             if class1.course_num == class2.course_num and not class1.isLab and not class2.isLab:
@@ -764,7 +777,7 @@ for x in combs:
 
 
 
-    if not timeConflict:
+    if not timeConflict and labWithClass:
         validSchedules.addSchedule(tempSchedule)
 
 noProfFlag = False
