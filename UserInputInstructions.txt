@@ -6,7 +6,7 @@ Required Classes: Classes that you need to take. The program will
 prioritize these classes when making schedules. Separate each class
 with a comma and space (Ex: MTH 1321, EGR 1301).
 
-Elective Classes: Classes that you're thinking of taking or classes that you 
+Elective Classes: Classes that you're considering taking or classes that you 
 would like to see how they fit in your schedule with required classes.
 Required classes will take priority over these. If you don't want to input an 
 elective class, just leave the field blank(Ex. Elective Classes: []).
