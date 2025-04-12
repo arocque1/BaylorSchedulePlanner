@@ -340,8 +340,14 @@ electiveClassesArr = tempElectiveClasses.split(", ")
 reqPreferredProf = []
 reqPreferredProfClass = []
 
+reqPreferredSection = []
+reqPreferredSectionClass = []
+
 electivePreferredProf = []
 electivePreferredProfClass = []
+
+electivePreferredSection = []
+electivePreferredSectionClass = []
 
 """Searches for professor names enclosed in parenthesis.
 Stores names of professors(if found) in a array and removes the parenthesis
@@ -349,20 +355,35 @@ and professor name from class name in class array"""
 for i in range(len(reqClassesArr)):
     temp = reqClassesArr[i].find("(")
     if temp != -1:
-        reqPreferredProf.append(reqClassesArr[i][temp+1:len(reqClassesArr[i])-1])
-        reqClassesArr[i] = reqClassesArr[i][0:temp]
-        reqPreferredProfClass.append(reqClassesArr[i])
+        classString = reqClassesArr[i][temp+1:len(reqClassesArr[i])-1]
+        if any(c.isalpha() for c in classString):
+            reqPreferredProf.append(classString)
+            reqClassesArr[i] = reqClassesArr[i][0:temp]
+            reqPreferredProfClass.append(reqClassesArr[i])
+        elif any(c.isnumeric() for c in classString):
+            reqPreferredSection.append(classString)
+            reqClassesArr[i] = reqClassesArr[i][0:temp]
+            reqPreferredSectionClass.append(reqClassesArr[i])
 
 for i in range(len(electiveClassesArr)):
     temp = electiveClassesArr[i].find("(")
     if temp != -1:
-        electivePreferredProf.append(electiveClassesArr[i][temp+1:len(electiveClassesArr[i])-1])
-        electiveClassesArr[i] = electiveClassesArr[i][0:temp]
-        electivePreferredProfClass.append(electiveClassesArr[i])
+        classString = electiveClassesArr[i][temp + 1:len(electiveClassesArr[i]) - 1]
+        if any(c.isalpha() for c in classString):
+            electivePreferredProf.append(classString)
+            electiveClassesArr[i] = electiveClassesArr[i][0:temp]
+            electivePreferredProfClass.append(electiveClassesArr[i])
+        elif any(c.isnumeric() for c in classString):
+            electivePreferredSection.append(classString)
+            electiveClassesArr[i] = electiveClassesArr[i][0:temp]
+            electivePreferredSectionClass.append(electiveClassesArr[i])
 
 
 preferredProf = reqPreferredProf + electivePreferredProf
 preferredProfClass = reqPreferredProfClass + electivePreferredProfClass
+
+preferredSection = reqPreferredSection + electivePreferredSection
+preferredSectionClass = reqPreferredSectionClass + electivePreferredSectionClass
 
 if electiveClassesArr[0] != "":
     allClassesArr = reqClassesArr + electiveClassesArr
@@ -592,11 +613,7 @@ for x in reqClassesArr:
     for y in classes:
         if x == y.course_num:
             #classSections.append(y) uncomment and delete if and else below if problem with adding classes
-            if y.course_num in reqPreferredProfClass:
-                if y.prof in reqPreferredProf:
-                    classSections.append(y)
-            else:
-                classSections.append(y)
+            classSections.append(y)
     reqClasses.append(classSections)
 
 creditSum = 0
@@ -612,19 +629,13 @@ print("Sorting...")
 
 electiveClasses = []
 
-
 for x in electiveClassesArr:
     classSections = []
     for y in classes:
         if x == y.course_num:
             #classSections.append(y) uncomment and delete if and else below if problem with adding classes
-            if y.course_num in electivePreferredProfClass:
-                if y.prof in electivePreferredProf:
-                    y.elective = True
-                    classSections.append(y)
-            else:
-                y.elective = True
-                classSections.append(y)
+            y.elective = True
+            classSections.append(y)
     electiveClasses.append(classSections)
 
 validSchedules = Schedules()
@@ -697,6 +708,10 @@ profFlagCount = []
 for i in range(0,len(preferredProfClass)):
     profFlagCount.append(0)
 
+sectionFlagCount = []
+for i in range(0,len(preferredSectionClass)):
+    sectionFlagCount.append(0)
+
 #############################################################################################################
 
 """Filters all combinations within user parameters and time constraints"""
@@ -712,7 +727,7 @@ for x in combs:
         tempSchedule.append(allClasses[y])
 
     profFlag = False
-    profIndex = -1
+    sectionFlag = False
     for i in range(0, len(preferredProfClass)):
         for j in tempSchedule:
             if j.course_num == preferredProfClass[i]:
@@ -723,8 +738,24 @@ for x in combs:
                     profFlagCount[i] += 1
         if profFlag:
             break
-
     if profFlag:
+        continue
+
+    for i in range(0,len(preferredSectionClass)):
+        for j in tempSchedule:
+            if j.course_num == preferredSectionClass[i]:
+                if j.section[0] == "0":
+                    sectionString = j.section[1]
+                else:
+                    sectionString = j.section
+                if preferredSection[i] != sectionString:
+                    sectionFlag = True
+                    break
+                else:
+                    sectionFlagCount[i] += 1
+        if sectionFlag:
+            break
+    if sectionFlag:
         continue
 
     for i in range(0,len(tempSchedule)):
@@ -733,11 +764,11 @@ for x in combs:
         for j in range(i+1,len(tempSchedule)):
             sameDay = False
             class2 = tempSchedule[j]
-            for l in class1.days:
-                for k in class2.days:
-                    for q in l:
-                        for w in k:
-                            if q == w:
+            for class1Days in class1.days:
+                for class2Days in class2.days:
+                    for class1Day in class1Days:
+                        for class2Day in class2Days:
+                            if class1Day == class2Day:
                                 sameDay = True
 
             """If there is a weird lab in the schedule, checks if the class has concurrent lab"""
@@ -786,6 +817,15 @@ for i in range(0,len(profFlagCount)):
         print("Error: No professor with name \"" + preferredProf[i] + "\" found for " + preferredProfClass[i] + ".")
         noProfFlag = True
 if noProfFlag:
+    time.sleep(5)
+    sys.exit()
+
+noSectionFlag = False
+for i in range(0,len(sectionFlagCount)):
+    if sectionFlagCount[i] == 0:
+        print("Error: Section \"" + preferredSection[i] + "\" not found for " + preferredSectionClass[i] + ".")
+        noSectionFlag = True
+if noSectionFlag:
     time.sleep(5)
     sys.exit()
 

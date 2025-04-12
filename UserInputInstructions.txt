@@ -23,11 +23,16 @@ Export to Excel: Exports data to Excel spreadsheet. Enter Yes or No.
 
 Export to txt: Exports data to txt file. Enter Yes or No.
 
-Filtering by professor: If you only want to take a specific professor in a class,
-you can filter by adding the professors FULL name enclosed in parenthesis.
+Filtering by professor: If you only want to take a specific professor in a 
+class, you can filter by adding the professor's FULL name after the class name, 
+enclosed in parenthesis.
 (Ex: CHE 1301(FirstName LastName)).
 
+Filtering by section: If you only want to take a specific section for a class,
+you can filter by adding the section number after the class name, enclosed in
+parenthesis.
+(Ex: MTH 2321(3))
 
-NOTE: Elective classes is the only field that you
-can leave blank and still run the program. Be sure that you don't leave
-any other fields blank
+
+NOTE: "Elective Classes" is the only field that you can leave blank and still 
+run the program. Be sure that you don't leave any other fields blank.

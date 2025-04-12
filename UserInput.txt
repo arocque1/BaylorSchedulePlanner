@@ -17,7 +17,7 @@ Export to txt: [enter]
 				    Example input
 ################################################################################
 
-Required Classes: [MTH 1322, CHE 1301, EGR 1302, REL 1310(John Smith)]
+Required Classes: [MTH 1322, CHE 1301(5), EGR 1302, REL 1310(John Smith)]
 
 Elective Classes: [ENG 1310]
 
