@@ -10,16 +10,18 @@ combination of classes in BearWeb.
 
 USER GUIDE:
 
-Before editing anything, make sure "Main.exe" or "Main.py", "UserInput.txt" and 
-"UserInputInstructions.txt" are all stored within the same folder on your desktop.
+Before running anything, make sure BaylorSchedulePlanner.exe" or "Main.py", 
+"UserInput.txt" and "UserInputInstructions.txt" are all stored within the 
+same folder on your desktop.
 
 To use the program, first read "UserInputInstructions.txt", then edit "UserInput.txt",
 where you will edit the given fields. Once you have filled out all fields in 
-"UserInput.txt", run "Main.exe" or "Main.py", which will generate an Excel spreadsheet or txt 
-file(depending on your input) with every possible schedule within the user's criteria. 
-The txt and/or Excel spreadsheet will be stored within the same folder that "Main.exe" 
-or "Main.py" is stored.
+"UserInput.txt", run "BaylorSchedulePlanner.exe" or "Main.py", and it will 
+generate an Excel spreadsheet or txt file(depending on your input) with 
+every possible schedule within the user's criteria. The txt and/or Excel 
+spreadsheet will be stored within the same folder that "BaylorSchedulePlanner.exe" 
+or "Main.py" is stored in.
 
-If you are running "Main.exe": When you try to run "Main.exe", Windows might warn 
-you that it is a virus. Simply click the "More info" button, then "Run anyway" 
-to bypass this. Enjoy!
+If you are running "BaylorSchedulePlanner.exe": When you try to run 
+"BaylorSchedulePlanner.exe", Windows might warn you that it is a virus. Simply 
+click the "More info" button, then "Run anyway" to bypass this. Enjoy!
