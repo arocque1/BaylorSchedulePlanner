@@ -3,9 +3,9 @@
 ################################################################################
 
 The goal of this program is to create every possible schedule that a student could 
-register for, given various parameters. This program automates creating and 
-registering for optimal class schedules instead of manually going through every 
-combination of classes in BearWeb.
+register for in an upcoming semester, given various parameters. This program 
+automates creating and registering for optimal class schedules instead of 
+manually going through every combination of classes in BearWeb.
 
 
 USER GUIDE:
